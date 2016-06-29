@@ -10,14 +10,14 @@ import gr.iti.mklab.util.GeoCellCoder;
  * @author gkordo
  *
  */
-public class Cluster {
+public class GeoCluster {
 	
 	/**
 	 * Set of neighbor cells contained in cluster
 	 */
 	private Set<GeoCell> cells = new HashSet<GeoCell>();
 
-	public Cluster(GeoCell cell){
+	public GeoCluster(GeoCell cell){
 		this.cells.add(cell);
 	}
 

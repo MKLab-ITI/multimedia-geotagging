@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import gr.iti.mklab.geo.Cluster;
+import gr.iti.mklab.geo.GeoCluster;
 import gr.iti.mklab.util.MyHashMap;
 
 /**
@@ -20,7 +20,7 @@ public class GeoCell {
 	private Long id;
 	private Float confidence;
 	private Map<String, Float> evidence;
-	private Map<Integer, Cluster> clusters;
+	private Map<Integer, GeoCluster> clusters;
 	
 	/**
 	 * Constructor of the class where the id is specified and the
@@ -31,7 +31,7 @@ public class GeoCell {
 		this.id = id;
 		this.evidence = new HashMap<String, Float>();
 		this.totalProb = 0.0;
-		this.clusters = new HashMap<Integer, Cluster>();
+		this.clusters = new HashMap<Integer, GeoCluster>();
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class GeoCell {
 
 		GeoCell tmpCell = cellMap.get(
 				Long.parseLong(cellMap.keySet().toArray()[0].toString()));
-		clusters.put(countID,new Cluster(tmpCell));
+		clusters.put(countID,new GeoCluster(tmpCell));
 		
 		for(Entry<Long, GeoCell> cell:cellMap.entrySet()){
 			if(cell.getValue().getTotalProb()>0.0001){
@@ -109,7 +109,7 @@ public class GeoCell {
 
 				boolean flag = false;
 
-				for(Entry<Integer, Cluster> cluster:clusters.entrySet()){
+				for(Entry<Integer, GeoCluster> cluster:clusters.entrySet()){
 					if(cluster.getValue().isInNeighboorhood(tmpCell, margin)){
 						flag = true;
 						break;
@@ -118,7 +118,7 @@ public class GeoCell {
 
 				if(!flag){
 					countID++;
-					clusters.put(countID,new Cluster(tmpCell));
+					clusters.put(countID,new GeoCluster(tmpCell));
 				}
 			}
 		}
@@ -133,7 +133,7 @@ public class GeoCell {
 		Set<Long> cells = new HashSet<Long>();
 		
 		cells.add(id);
-		for(Entry<Integer, Cluster> cluster:clusters.entrySet()){
+		for(Entry<Integer, GeoCluster> cluster:clusters.entrySet()){
 			if(cluster.getValue().size()>1){
 				cells.add(cluster.getValue().getRepresentativeCell());
 			}
