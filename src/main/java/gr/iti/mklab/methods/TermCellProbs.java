@@ -1,6 +1,5 @@
 package gr.iti.mklab.methods;
 
-import gr.iti.mklab.tools.DataManager;
 import gr.iti.mklab.tools.InterfaceTermCellProb;
 import gr.iti.mklab.util.Utils;
 import gr.iti.mklab.util.TextUtil;
@@ -23,7 +22,7 @@ import org.apache.log4j.Logger;
  * @author gkordo
  *
  */
-public class TermCellProbMapRed implements InterfaceTermCellProb{
+public class TermCellProbs implements InterfaceTermCellProb{
 
 	private static Logger logger = Logger.getLogger("gr.iti.mklab.methods.TermCellProbCalculator");
 	private static Set<String> testIDs;
@@ -35,9 +34,9 @@ public class TermCellProbMapRed implements InterfaceTermCellProb{
 	 * @param testIDs : set of test image IDs
 	 * @param users	: set of test user IDs
 	 */
-	public TermCellProbMapRed(Set<String> testIDs, Set<String> users){
-		TermCellProbMapRed.testIDs = testIDs;
-		TermCellProbMapRed.users = users;
+	public TermCellProbs(Set<String> testIDs, Set<String> users){
+		TermCellProbs.testIDs = testIDs;
+		TermCellProbs.users = users;
 	}	
 
 	/**
@@ -58,30 +57,30 @@ public class TermCellProbMapRed implements InterfaceTermCellProb{
 		 */
 		public void map(LongWritable key, Text value, OutputCollector<Text, Text> output, Reporter reporter) throws IOException {
 
-			String[] line = value.toString().split("\t");
+			String[] metadata = value.toString().split("\t");
 
-			if (!testIDs.contains(line[1]) && !users.contains(line[3]) // train image and its user are not contained in the test set
-					&& !line[12].isEmpty() && !line[13].isEmpty() // train image contains coordinations
-					&& (!line[10].isEmpty() || !line[8].isEmpty())){ // train image contains any textual information
+			if (!testIDs.contains(metadata[1]) && !users.contains(metadata[3]) // train image and its user are not contained in the test set
+					&& !metadata[12].isEmpty() && !metadata[13].isEmpty() // train image contains coordinations
+					&& (!metadata[10].isEmpty() || !metadata[8].isEmpty())){ // train image contains any textual information
 
 				// get image cell based on its latitude-longitude pair
 				BigDecimal cellLonCenter = new BigDecimal(Double.parseDouble(
-						line[12])).setScale(scale, BigDecimal.ROUND_HALF_UP);
+						metadata[12])).setScale(scale, BigDecimal.ROUND_HALF_UP);
 				BigDecimal cellLatCenter = new BigDecimal(Double.parseDouble(
-						line[13])).setScale(scale, BigDecimal.ROUND_HALF_UP);
+						metadata[13])).setScale(scale, BigDecimal.ROUND_HALF_UP);
 
 				String cellID = cellLonCenter+"_"+cellLatCenter;
 
 				//get image user ID
-				String userID = line[3];
+				String userID = metadata[3];
 
 				// get image tags
 				Set<String> terms = new HashSet<String>();
-				TextUtil.parse(line[10], terms);
-				TextUtil.parse(line[8], terms);
+				TextUtil.parse(metadata[10], terms);
+				TextUtil.parse(metadata[8], terms);
 
 				for(String term:terms){
-					if(!term.isEmpty()){
+					if(!term.isEmpty() && term.length() > 2){
 						output.collect(new Text(term), new Text(cellID+">"+userID)); // key-value pair
 					}
 				}
@@ -175,20 +174,20 @@ public class TermCellProbMapRed implements InterfaceTermCellProb{
 	/**
 	 * Core function for the job of tag-cell probabilities calculation.
 	 * @param dir : directory of the project
-	 * @param trainFile : the file of the train set
+	 * @param trainFolder : the file of the train set
 	 * @param outFolder : the folder where the tag-set probabilities file will be stored
 	 * @param scale : the scale of the grid that is used
 	 */
-	public void calculatorTermCellProb(String dir, String trainFile,
+	public void calculatorTermCellProb(String dir, String trainFolder,
 			String outFolder, int scale) throws IOException{
 
 		logger.info("Process: Term-Cell Propabilities Calculation\t|\t"
 				+ "Status: INITIALIZE");
 		
-		TermCellProbMapRed.scale = scale;
+		TermCellProbs.scale = scale;
 
 		// initialize Job
-		JobConf conf = new JobConf(TermCellProbMapRed.class);
+		JobConf conf = new JobConf(TermCellProbs.class);
 		conf.setJobName("termcellprobmapred");
 
 		conf.setOutputKeyClass(Text.class);
@@ -207,10 +206,7 @@ public class TermCellProbMapRed implements InterfaceTermCellProb{
 			FileUtils.forceDelete(folder);
 		}
 
-		// create a temporary file containing the train set
-		DataManager.createTempFile(dir, trainFile);
-
-		FileInputFormat.setInputPaths(conf, new Path(dir + "temp"));
+		FileInputFormat.setInputPaths(conf, new Path(dir + trainFolder));
 		FileOutputFormat.setOutputPath(conf, new Path(dir + outFolder));
 
 		// start Job
@@ -224,6 +220,5 @@ public class TermCellProbMapRed implements InterfaceTermCellProb{
 
 		new File(dir + outFolder + "/part-00000").renameTo(
 				new File(dir + outFolder + "/term_cell_probs")); // rename the output file
-		DataManager.deleteTempFile(dir); // delete temporary file
 	}
 }

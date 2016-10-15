@@ -13,7 +13,7 @@ import gr.iti.mklab.methods.MultipleGrid;
 import gr.iti.mklab.data.GeoCell;
 import gr.iti.mklab.methods.LanguageModel;
 import gr.iti.mklab.methods.SimilaritySearch;
-import gr.iti.mklab.methods.TermCellProbMapRed;
+import gr.iti.mklab.methods.TermCellProbs;
 import gr.iti.mklab.metrics.Entropy;
 import gr.iti.mklab.metrics.Locality;
 import gr.iti.mklab.tools.DataManager;
@@ -44,7 +44,7 @@ public class MultimediaGeotagging {
 		properties.load(new FileInputStream("config.properties"));
 		String dir = properties.getProperty("dir");
 
-		String trainFile = properties.getProperty("trainFile");
+		String trainFolder = properties.getProperty("trainFolder");
 		String testFile = properties.getProperty("testFile");
 
 		String process = properties.getProperty("process");
@@ -61,35 +61,32 @@ public class MultimediaGeotagging {
 			Set<String> testIDs = DataManager.getSetOfImageIDs(dir + testFile);
 			Set<String> usersIDs = DataManager.getSetOfUserID(dir + testFile);
 
-			TermCellProbMapRed trainLM = new TermCellProbMapRed(testIDs, usersIDs);
+			TermCellProbs trainLM = new TermCellProbs(testIDs, usersIDs);
 
-			trainLM.calculatorTermCellProb(dir, trainFile, 
-					"TermCellProbs/scale_" + coarserScale, coarserScale);
+			trainLM.calculatorTermCellProb(dir, trainFolder, 
+					"Term-Cell Probs/scale_" + coarserScale, coarserScale);
 
-			trainLM.calculatorTermCellProb(dir, trainFile, 
-					"TermCellProbs/scale_" + finerScale, finerScale);
+			trainLM.calculatorTermCellProb(dir, trainFolder, 
+					"Term-Cell Probs/scale_" + finerScale, finerScale);
 		}
 
 		// Feature Selection and Feature Weighting (Locality and Spatial Entropy Calculation)
 		if(process.contains("FS") || process.equals("all")){
-			Entropy.calculateEntropyWeights(dir, "TermCellProbs/scale_" 
-					+ coarserScale + "/term_cell_probs");
-			
-			Entropy.calculateEntropyWeights(dir, "TermCellProbs/scale_"
-					+ finerScale + "/term_cell_probs");
+			Entropy.calculateEntropyWeights(dir, "Term-Cell Probs/scale_" + coarserScale
+					+ "/term_cell_probs");
 			
 			Locality loc = new Locality(dir + testFile, coarserScale);
-			loc.calculateLocality(dir, trainFile);
+			loc.calculateLocality(dir, trainFolder);
 		}
 
 		// Language Model
 		if(process.contains("LM") || process.equals("all")){
 			MultimediaGeotagging.computeMLCs(dir, testFile, "resultLM_scale" + coarserScale, 
-					"TermCellProbs/scale_" + coarserScale + "/term_cell_probs", 
+					"Term-Cell Probs/scale_" + coarserScale + "/term_cell_probs", 
 					"Weights", true);
 
 			MultimediaGeotagging.computeMLCs(dir, testFile, "resultLM_scale" + finerScale, 
-					"TermCellProbs/scale_" + finerScale + "/term_cell_probs", 
+					"Term-Cell Probs/scale_" + finerScale + "/term_cell_probs", 
 					"Weights", false);
 		}
 
@@ -104,7 +101,7 @@ public class MultimediaGeotagging {
 		if(process.contains("SS") || process.equals("all")){
 			new SimilarityCalculator(dir + testFile, dir + 
 					"resultLM/resultLM_mg" + coarserScale + "-" + finerScale)
-			.performSimilarityCalculation(dir, trainFile, "resultSS");
+			.performSimilarityCalculation(dir, trainFolder, "resultSS");
 
 			new SimilaritySearch(dir + testFile, dir + 
 					"resultLM/resultLM_mg" + coarserScale + "-" + finerScale, 
@@ -154,18 +151,20 @@ public class MultimediaGeotagging {
 
 			prog.showProgress(count, System.currentTimeMillis());
 			count++;
-
+			
+			String[] metadata = line.split("\t");
+			
 			// Pre-procession of the tags and title
 			Set<String> terms = new HashSet<String>();
-			TextUtil.parse(line.split("\t")[10], terms);
-			TextUtil.parse(line.split("\t")[8], terms);
+			TextUtil.parse(metadata[10], terms);
+			TextUtil.parse(metadata[8], terms);
 
-			GeoCell result = lmItem.calculateLanguageModel(terms, termCellProbsMap, confidenceFlag);
+			GeoCell result = lmItem.calculateLanguageModel(terms,
+					termCellProbsMap, confidenceFlag);
 
 			if(result == null){ // no result from tags and title procession
-
 				// give image's description in the language model (if provided)
-				result = lmItem.calculateLanguageModel(TextUtil.parse(line.split("\t")[8], terms),
+				result = lmItem.calculateLanguageModel(TextUtil.parse(metadata[9], terms),
 						termCellProbsMap, confidenceFlag);
 			}
 
