@@ -206,6 +206,9 @@ public class Locality {
 		logger.info("Process: Locality weight calculation\t|\t"
 				+ "Status: COMPLETED\t|\tTotal time: " + 
 				(System.currentTimeMillis()-startTime)/60000.0+"m");
+		
+		FileUtils.cleanDirectory(folder);
+		FileUtils.forceDelete(folder);
 	}
 
 	/**
@@ -232,7 +235,7 @@ public class Locality {
 		EasyBufferedWriter writer = new EasyBufferedWriter(outFile);
 		int i = 0, totalTerms = termLocalityValues.size();
 		for(Entry<String, Double> entry : termLocalityValues.entrySet()){
-			writer.write(entry.getKey()+"\t"+(double)(totalTerms-i)/totalTerms);
+			writer.write(entry.getKey() + "\t" + (double)(totalTerms-i)/totalTerms);
 			writer.newLine();
 			i++;
 		}
