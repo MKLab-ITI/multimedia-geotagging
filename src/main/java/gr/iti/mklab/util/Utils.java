@@ -15,13 +15,16 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class Utils {
 
+	
 	public static <K extends Comparable,V extends Comparable> Map<K,V> sortByValues(Map<K,V> map){
 		List<Map.Entry<K,V>> entries = new LinkedList<Map.Entry<K,V>>(map.entrySet());
 
 		Collections.sort(entries, Collections.reverseOrder(new Comparator<Map.Entry<K,V>>() {
 
+			
 			public int compare(Entry<K, V> o1, Entry<K, V> o2) {
 				return o1.getValue().compareTo(o2.getValue());
 			}

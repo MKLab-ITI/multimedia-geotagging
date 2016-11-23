@@ -41,7 +41,7 @@ public class MultimediaGeotagging {
 
 		logger.info("Program Started");
 
-		properties.load(new FileInputStream("config.properties"));
+		properties.load(new FileInputStream("properties/config.properties"));
 		String dir = properties.getProperty("dir");
 
 		String trainFolder = properties.getProperty("trainFolder");

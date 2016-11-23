@@ -81,7 +81,7 @@ public class Evaluation {
 
 		Properties properties = new Properties();
 
-		properties.load(new FileInputStream("eval.properties"));
+		properties.load(new FileInputStream("properties/eval.properties"));
 
 		// input files
 		String testFile = properties.getProperty("testFile");
