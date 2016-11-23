@@ -6,9 +6,27 @@
 	<artifactId>certhTopologies</artifactId>
 	<version>2.0</version>
 	<packaging>pom</packaging>
+
+	<developers>
+		<developer>
+			<id>gkordo</id>
+			<name>Giorgos Kordopatis-Zilos</name>
+			<email>georgekordopatis@iti.gr</email>
+		</developer>
+	</developers>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
 	<modules>
 		<module>multimedia-geolocator</module>
 	</modules>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.storm</groupId>
@@ -35,6 +53,7 @@
 			<version>0.6.0</version>
 		</dependency>
 	</dependencies>
+	
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -88,6 +107,7 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.7</maven.compiler.source>
@@ -98,4 +118,5 @@
 		<restlet.url>http://localhost:8182</restlet.url>
 		<exchange.name>test-exchange</exchange.name>
 	</properties>
+	
 </project>
