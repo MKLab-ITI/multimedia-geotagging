@@ -7,10 +7,8 @@ import gr.iti.mklab.util.EasyBufferedReader;
 import gr.iti.mklab.util.EasyBufferedWriter;
 import gr.iti.mklab.util.TextUtil;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -79,8 +77,7 @@ public class MultimediaGeolocator {
 		//perform language model for every query sentence.
 		while ((input = reader.readLine())!=null){
 
-			List<String> tagsList = new ArrayList<String>();
-			Collections.addAll(tagsList, TextUtil.cleanText(input).split("\\s"));
+			 Set<String> tagsList = TextUtil.cleanText(input);
 
 			String estimatedCell = lmItem.calculateLanguageModel(tagsList, wordCellProbsMap);
 

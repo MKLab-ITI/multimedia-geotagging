@@ -47,7 +47,7 @@ public class LanguageModel {
 		this.entropyWords = new HashMap<String,Double>();
 	}
 	//The function that compose the other functions to calculate and return the Most Likely Cell for a query sentence.
-	public String calculateLanguageModel(List<String> sentenceWords, Map<String,Map<Long,Double>> wordCellProbsMap) {
+	public String calculateLanguageModel(Set<String> sentenceWords, Map<String,Map<Long,Double>> wordCellProbsMap) {
 
 		Map<Long, Double> cellMap = calculateCellsProbForImageTags(sentenceWords, wordCellProbsMap);
 
@@ -99,7 +99,7 @@ public class LanguageModel {
 	}
 
 	//This is the function that calculate the cell probabilities.
-	public Map<Long, Double> calculateCellsProbForImageTags (List<String> sentenceWords, Map<String,Map<Long,Double>> wordCellProbsMap) {
+	public Map<Long, Double> calculateCellsProbForImageTags (Set<String> sentenceWords, Map<String,Map<Long,Double>> wordCellProbsMap) {
 
 		Map<Long,Double> cellList = new HashMap<Long,Double>();
 		cellWords = new HashMap<Long,Set<String>>();
