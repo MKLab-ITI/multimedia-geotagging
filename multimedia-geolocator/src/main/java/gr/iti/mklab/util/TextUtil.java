@@ -38,8 +38,15 @@ public class TextUtil {
 						wordSet.add(word);
 					}
 				}
-			}	
-
+			}
+			for(int i=0;i<cText.split(" ").length-1;i+=2){
+				String shingles = cText.split(" ")[i]+" "+cText.split(" ")[i+1];
+				if(!shingles.equals(" ")
+						&&!cText.split(" ")[i].matches("[0-9]+")
+						&&!cText.split(" ")[i+1].matches("[0-9]+")){
+					wordSet.add(shingles);
+				}
+			}
 		}
 		return wordSet;
 	}
