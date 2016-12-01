@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * It is the implementation of the language model. Here the term-cell probabilities are loaded and all calculation for the estimated location take place.
  * The model calculate the cell probabilities summing up the term-cell probabilities for every different cell based on the terms that are contained in the query sentence.
  * 		  S
- * p(c) = Σ p(t|c)*(N(e)
+ * p(c) = Σ p(t|c) * (omega*w_se + (1-omega)*w_l)
  * 		 t=1
  * The cell with that maximizes this summation considering as the Most Likely Cell for the query sentence.
  * @author gkordo
@@ -68,6 +68,7 @@ public class LanguageModel {
 		
 		Double sum = 0.0, total = 0.0;
 
+		int counter = 0;
 		for(Entry<Long, GeoCell> entry:cellMap.entrySet()){
 			double[] mCell = CellCoder.cellDecoding(mlc);
 			double[] cell = CellCoder.cellDecoding(entry.getKey());
@@ -76,8 +77,11 @@ public class LanguageModel {
 					&& (cell[1] >= (mCell[1]-confRange)) 
 					&& (cell[1] <= (mCell[1]+confRange))){
 				sum += entry.getValue().getTotalProb();
+			} else if(confItemNumber<counter){
+				break;
 			}
 			total += entry.getValue().getTotalProb();
+			counter++;
 		}
 
 		return sum/total;
