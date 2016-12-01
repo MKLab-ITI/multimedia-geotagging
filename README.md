@@ -1,7 +1,7 @@
 Multimedia Geotagging
 ======
 
-This repository contains the implementation of algorithms that estimate the geographic location of multimedia items based on their textual content. The approach is described in <a href="http://ceur-ws.org/Vol-1436/Paper58.pdf">here</a> and <a href="http://link.springer.com/chapter/10.1007/978-3-319-18455-5_2">here</a>. It was submitted in <a href="http://www.multimediaeval.org/mediaeval2016/placing/">MediaEval Placing Task 2016</a>.
+This repository contains the implementation of algorithms that estimate the geographic location of multimedia items based on their textual content. The approach is described in <a href="http://slim-sig.irisa.fr/me16proc/MediaEval_2016_paper_13.pdf">here</a> and <a href="http://link.springer.com/chapter/10.1007/978-3-319-18455-5_2">here</a>. It was submitted in <a href="http://www.multimediaeval.org/mediaeval2016/placing/">MediaEval Placing Task 2016</a>.
 
 
 
