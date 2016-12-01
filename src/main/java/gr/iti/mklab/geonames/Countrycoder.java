@@ -1,4 +1,4 @@
-package gr.iti.mklab.geo;
+package gr.iti.mklab.geonames;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import gr.iti.mklab.geonames.GeoObject;
+import gr.iti.mklab.geo.GeoObject;
 import gr.iti.mklab.util.EasyBufferedReader;
 
 
