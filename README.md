@@ -16,7 +16,7 @@ _Root Directory_<br>
 In the root directory that is given as argument must exist a folder named <a href="https://www.dropbox.com/sh/6v7fz50saldiq9g/AABfyc9Zxe1kE4k3Sf-xNJyDa?dl=0">multi-geo-utils</a> (<a href="https://www.dropbox.com/s/8lfktlt0cjse5n3/multi-geo-utils.zip?dl=0">zip</a>) that contains the files:
 * <a href="http://download.geonames.org/export/dump/countryInfo.txt">`countryInfo.txt`</a>
 * <a href="http://download.geonames.org/export/dump/cities1000.zip">`cities1000.txt`</a>
-* <a href="https://www.dropbox.com/s/w3tyb4z05mg4ofw/WordCellProbs.txt?dl=0">`wordcellprobs.txt`</a>
+* <a href="https://www.dropbox.com/s/7w6qswpnyg71xk1/term_cell_probs.txt?dl=0">`term_cell_probs.txt`</a>
 
 _Input File_<br>
 Each individual line of the input line have to be a different query sentence, otherwise they are going to be considered as one and the estimation will be for both sentences. 
