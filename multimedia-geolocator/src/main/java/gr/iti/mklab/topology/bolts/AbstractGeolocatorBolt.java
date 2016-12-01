@@ -71,7 +71,7 @@ public abstract class AbstractGeolocatorBolt extends BaseRichBolt {
 			e.printStackTrace();
 		}
 
-		String[] files = { "wordcellprobs.txt", "cities1000.txt",
+		String[] files = { "term_cell_probs.txt", "cities1000.txt",
 				"countryInfo.txt", "osmCellLabels.txt"};
 		for (String file : files) {
 			FileLoader.getFile(restletURL + "/static/multi-geo-utils/" + file,
@@ -79,7 +79,7 @@ public abstract class AbstractGeolocatorBolt extends BaseRichBolt {
 		}
 		
 		// initialize Language Model
-		this.languageModel = new LanguageModel(localDirectory + "/wordcellprobs.txt");
+		this.languageModel = new LanguageModel(localDirectory + "/term_cell_probs.txt", 0.1, 100);
 		
 		// initialize Geoname Services
 		this.rgeoService = new ReverseGeocoder(localDirectory +"/cities1000.txt", 
