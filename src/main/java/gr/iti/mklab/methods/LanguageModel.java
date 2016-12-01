@@ -146,7 +146,7 @@ public class LanguageModel {
 			Double[] weights = {Double.parseDouble(line.split("\t")[2]), Double.parseDouble(line.split("\t")[1])};
 			
 			termWeights.put(term, weights); // load term weights
-			//logger.info(line.split("\t")[0]);
+			
 			String[] inputCells = 
 					(line.split("\t").length>3?line.split("\t")[3].split(" "):new String[] {});
 			Map<Long, Double> tmpCellMap = new HashMap<Long,Double>();
