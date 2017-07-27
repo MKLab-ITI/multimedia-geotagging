@@ -76,7 +76,7 @@ public class MultimediaGeolocator {
 		//perform language model for every query sentence.
 		while ((input = reader.readLine())!=null){
 
-			Set<String> tagsList = TextUtil.cleanText(input);
+			Set<String> tagsList = TextUtil.cleanText(input, true);
 
 			GeoCell mlc = lmItem.calculateLanguageModel(tagsList);
 
