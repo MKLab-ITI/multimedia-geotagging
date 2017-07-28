@@ -39,7 +39,7 @@ public class ReverseGeocoder extends AbstractGeoService {
 			logger.error(e.getMessage());
 		}
 		if (city == null) return null;
-		return city.getName()+" "+countryCodes.get(city.getCountryCode());
+		return city.getName()+", "+countryCodes.get(city.getCountryCode());
 	}
 	
 	
