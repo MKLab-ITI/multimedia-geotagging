@@ -106,11 +106,11 @@ public class LanguageModel {
 					cell = entry.getKey();
 					if(cellMap.containsKey(cell)){
 						cellMap.get(cell).addProb(entry.getValue()
-								*(0.8*locality+0.2*entropy), term);
+								*(0.35*locality+0.65*entropy), term);
 					}else{
 						GeoCell tmp = new GeoCell(cell);
 						tmp.addProb(entry.getValue()
-								*(0.8*locality+0.2*entropy), term);
+								*(0.35*locality+0.65*entropy), term);
 						cellMap.put(cell,tmp);
 					}
 				}
