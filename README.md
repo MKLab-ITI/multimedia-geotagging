@@ -28,7 +28,7 @@ The output file is going to be stored in the specified path with the proper name
 `estimated location`<br>
 `city, country`<br>
 `confidence`<br>
-`associated words with the Most Likely Cell`
+`associated words with the MLC`
 
 The different result features are separated by tab character. For the sentences that an estimation can not be made the respective lines have the record `N/A`.
 
