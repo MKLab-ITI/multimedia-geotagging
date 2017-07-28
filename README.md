@@ -7,7 +7,7 @@ Contains a demo version of <a href="https://github.com/socialsensor/multimedia-g
 
 The containing jar file is the implementation of the algorithm. It takes as input a file whose lines are different sentences. Every sentence is used as a query for the language model that have been built, in order to calculate the Most Likely Cell (MLC) based on pre-calculated word-cell probabilities. This MLC is the final location estimation for every sentence. The output is a file that contains all the estimated location (MLCs) and the countries that they belong for all sentences. Each line of the output file corresponds to the respective line of the input file.
 
-An example is provided in <a href="https://github.com/MKLab-ITI/multimedia-geotagging/blob/demo/src/test/java/gr/iti/mklab/test/MultimediaGeolocator">MultimediaGeolocator.java</a>. In order to run it the follow arguments have to be given.<br>
+An example is provided in <a href="https://github.com/MKLab-ITI/multimedia-geotagging/blob/demo/src/test/java/gr/iti/mklab/test/MultimediaGeolocator">MultimediaGeolocator.java</a>. The follow arguments have to be given, in order to run it.<br>
 `args[0]` : the root directory of the project<br>
 `args[1]` : input file that contains the query sentences<br>
 `args[2]` : the pathname of the output file
@@ -32,7 +32,7 @@ The output file is going to be stored in the specified path with the proper name
 
 The different result features are separated by tab character. For the sentences that an estimation can not be made the respective lines have the record `N/A`.
 
-In order to run the jar file, there must be in the same directory the folder <a href="https://www.dropbox.com/sh/6v7fz50saldiq9g/AABfyc9Zxe1kE4k3Sf-xNJyDa?dl=0">util</a> and the file <a href="https://github.com/socialsensor/multimedia-geotagging/blob/demo/log4j.properties">log4j.properties</a>.
+In order to run the jar file, there must be in the same directory the folder <a href="https://www.dropbox.com/sh/6v7fz50saldiq9g/AABfyc9Zxe1kE4k3Sf-xNJyDa?dl=0">multi-geo-utils</a> and the file <a href="https://github.com/socialsensor/multimedia-geotagging/blob/demo/log4j.properties">log4j.properties</a>.
 
 A short test file and its results may be found <a href="https://github.com/socialsensor/multimedia-geotagging/blob/demo/test.txt">here</a> and <a href="https://github.com/socialsensor/multimedia-geotagging/blob/demo/test_out.txt">here</a>, respectively.
 
