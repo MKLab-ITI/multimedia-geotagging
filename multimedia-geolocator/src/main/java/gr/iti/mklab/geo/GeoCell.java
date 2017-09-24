@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import gr.iti.mklab.geo.GeoCluster;
 import gr.iti.mklab.util.MyHashMap;
 
 /**
@@ -104,7 +103,7 @@ public class GeoCell {
 		clusters.put(countID,new GeoCluster(tmpCell));
 		
 		for(Entry<Long, GeoCell> cell:cellMap.entrySet()){
-			if(cell.getValue().getTotalProb()>0.0001){
+			if(cell.getValue().getTotalProb()>0.001){
 				tmpCell = cell.getValue();
 
 				boolean flag = false;

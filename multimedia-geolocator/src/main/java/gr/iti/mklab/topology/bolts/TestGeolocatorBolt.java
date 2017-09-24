@@ -9,8 +9,8 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
-import gr.iti.mklab.geo.GeoCell;
 import gr.iti.mklab.util.GeoCellCoder;
+import gr.iti.mklab.geo.GeoCell;
 import gr.iti.mklab.util.EasyBufferedWriter;
 import gr.iti.mklab.util.TextUtil;
 

@@ -42,12 +42,12 @@ public class GeoParser {
 					label = TextUtil.parseTweetLite(label);
 					if(text.contains(label) && label.length() > 4){
 						helpMap.put(label, label.length());
-					}else if(label.split(" ").length > 1){
-						for(String term:label.split(" ")){
-							if(text.contains(term) && term.length() > 4){
-								helpMap.put(label, label.length());
-							}
-						}
+//					}else if(label.split(" ").length > 1){
+//						for(String term:label.split(" ")){
+//							if(text.contains(term) && term.length() > 4){
+//								helpMap.put(label, label.length());
+//							}
+//						}
 					}
 				}
 			}
@@ -79,21 +79,21 @@ public class GeoParser {
 		}
 
 		// extract based on individual word similarity
-		for(Entry<String, Integer> label:helpMap.entrySet()){
-
-			double similarity = 0.0;
-
-			for(String term:label.getKey().split(" ")){
-				if(text.contains(term) 
-						&& term.length() > 4){
-					similarity += 1.0/label.getKey().split(" ").length;
-				}
-			}
-
-			if(similarity > 0.6){
-				export.add(label.getKey());
-			}
-		}
+//		for(Entry<String, Integer> label:helpMap.entrySet()){
+//
+//			double similarity = 0.0;
+//
+//			for(String term:label.getKey().split(" ")){
+//				if(text.contains(term) 
+//						&& term.length() > 4){
+//					similarity += 1.0/label.getKey().split(" ").length;
+//				}
+//			}
+//
+//			if(similarity > 0.6){
+//				export.add(label.getKey());
+//			}
+//		}
 		return export;
 	}
 

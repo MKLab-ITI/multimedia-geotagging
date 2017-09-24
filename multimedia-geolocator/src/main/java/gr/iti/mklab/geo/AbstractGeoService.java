@@ -1,4 +1,4 @@
-package gr.iti.mklab.methods;
+package gr.iti.mklab.geo;
 
 import java.util.HashMap;
 import java.util.Map;

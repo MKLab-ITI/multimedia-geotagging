@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import gr.iti.mklab.geo.AbstractGeoService;
 import gr.iti.mklab.geo.GeoObject;
 import gr.iti.mklab.geo.LightweightGeoObject;
 import gr.iti.mklab.util.EasyBufferedReader;
