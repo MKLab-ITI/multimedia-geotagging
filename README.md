@@ -1,7 +1,7 @@
 Multimedia Geotagging
 ======
 
-This repository contains the implementation of algorithms that estimate the geographic location of multimedia items based on their textual content. The approach is described in <a href="http://slim-sig.irisa.fr/me16proc/MediaEval_2016_paper_13.pdf">here</a> and <a href="http://link.springer.com/chapter/10.1007/978-3-319-18455-5_2">here</a>. It was submitted in <a href="http://www.multimediaeval.org/mediaeval2016/placing/">MediaEval Placing Task 2016</a>.
+This repository contains the implementation of algorithms that estimate the geographic location of multimedia items based on their textual content. The approach is described in the paper <a href="https://www.researchgate.net/publication/318848293_Geotagging_Text_Content_With_Language_Models_and_Feature_Mining">Geotagging Text Content With Language Models and Feature Mining</a>.
 
 
 
@@ -78,7 +78,7 @@ In conclusion, the file that is created by the Multiple Resolution Grids techniq
 
 <h3>Evaluation Framework</h3>
 
-This <a href="https://github.com/MKLab-ITI/multimedia-geotagging/tree/develop/src/main/java/gr/iti/mklab/mmcomms16">pacage</a> contains the implemetations of the sampling strategies described in the <a href="http://dl.acm.org/citation.cfm?doid=2983554.2983558">MMCommons 2016 paper</a>. In order to run the evaluation framework you have to set all necessary argument in <a href="https://github.com/MKLab-ITI/multimedia-geotagging/blob/master/eval.properties">configuration file</a>, following the instruction for every argument. To run the code, the <a href="https://github.com/MKLab-ITI/multimedia-geotagging/blob/master/src/test/java/gr/iti/mklab/main/Evaluation.java">Evaluation class</a> have to be executed.
+This <a href="https://github.com/MKLab-ITI/multimedia-geotagging/tree/develop/src/main/java/gr/iti/mklab/mmcomms16">package</a> contains the implemetations of the sampling strategies described in the <a href="http://dl.acm.org/citation.cfm?doid=2983554.2983558">MMCommons 2016 paper</a>. In order to run the evaluation framework you have to set all necessary argument in <a href="https://github.com/MKLab-ITI/multimedia-geotagging/blob/master/eval.properties">configuration file</a>, following the instruction for every argument. To run the code, the <a href="https://github.com/MKLab-ITI/multimedia-geotagging/blob/master/src/test/java/gr/iti/mklab/main/Evaluation.java">Evaluation class</a> have to be executed.
 
 Additionally, in this <a href="https://github.com/MKLab-ITI/multimedia-geotagging/blob/master/samples/">folder</a>, the <a href="https://github.com/MKLab-ITI/multimedia-geotagging/blob/master/samples/samples.zip">zip file</a> that contains the generated collections from the different sampling strategies and the <a href="https://github.com/MKLab-ITI/multimedia-geotagging/blob/master/samples/building_concepts.txt">file</a> of the building concepts can be found. Keep in mind that the geographical uniform sampling, the user uniform sampling and text diversity sampling generates different files in every code execution because they involve random selections and permutations.
 
