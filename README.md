@@ -7,7 +7,7 @@ Contains a demo version of <a href="https://github.com/socialsensor/multimedia-g
 
 The containing jar file is the implementation of the algorithm. It takes as input a file whose lines are different sentences. Every sentence is used as a query for the language model that have been built, in order to calculate the Most Likely Cell (MLC) based on pre-calculated word-cell probabilities. This MLC is the final location estimation for every sentence. The output is a file that contains all the estimated location (MLCs) and the countries that they belong for all sentences. Each line of the output file corresponds to the respective line of the input file.
 
-An example is provided in <a href="https://github.com/MKLab-ITI/multimedia-geotagging/blob/demo/src/test/java/gr/iti/mklab/test/MultimediaGeolocator.javar">MultimediaGeolocator.java</a>. The follow arguments have to be given, in order to run it.<br>
+An example is provided in <a href="https://github.com/MKLab-ITI/multimedia-geotagging/blob/demo/src/test/java/gr/iti/mklab/test/MultimediaGeolocator.java">MultimediaGeolocator.java</a>. The follow arguments have to be given, in order to run it.<br>
 `args[0]` : the root directory of the project<br>
 `args[1]` : input file that contains the query sentences<br>
 `args[2]` : the pathname of the output file
