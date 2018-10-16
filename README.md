@@ -1,20 +1,20 @@
 Multimedia Geotagging (Demo Version)
 ======
-Contains a demo version of <a href="https://github.com/socialsensor/multimedia-geotagging">multimedia-geotagging</a> that is the implementation of algorithms that estimate the geographic location of multimedia items based on their textual content and metadata. Also, <a href="https://github.com/socialsensor/geo-util">geo-util</a> is used in order to get the city and country name of the estimated location.
+Contains a demo version of <a href="https://github.com/socialsensor/multimedia-geotagging">multimedia-geotagging</a> that is the implementation of algorithms that estimate the geographic location of multimedia items based on their textual content and metadata. Also, <a href="https://github.com/socialsensor/geo-util">geo-util</a> is used internally in order to get the city and country name of the estimated location.
 
 
 <h2>Instructions</h2>
 
 The containing jar file is the implementation of the algorithm. It takes as input a file whose lines are different sentences. Every sentence is used as a query for the language model that have been built, in order to calculate the Most Likely Cell (MLC) based on pre-calculated word-cell probabilities. This MLC is the final location estimation for every sentence. The output is a file that contains all the estimated location (MLCs) and the countries that they belong for all sentences. Each line of the output file corresponds to the respective line of the input file.
 
-An example is provided in <a href="https://github.com/MKLab-ITI/multimedia-geotagging/blob/demo/src/test/java/gr/iti/mklab/test/MultimediaGeolocator">MultimediaGeolocator.java</a>. The follow arguments have to be given, in order to run it.<br>
+An example is provided in <a href="https://github.com/MKLab-ITI/multimedia-geotagging/blob/demo/src/test/java/gr/iti/mklab/test/MultimediaGeolocator.javar">MultimediaGeolocator.java</a>. The follow arguments have to be given, in order to run it.<br>
 `args[0]` : the root directory of the project<br>
 `args[1]` : input file that contains the query sentences<br>
 `args[2]` : the pathname of the output file
 
 _Requirements_<br>
 To download the required files, you may run `requirements.sh`. Otherwise, they have to be manually downloaded.
-The root directory must contain a folder named <a href="https://www.dropbox.com/sh/6v7fz50saldiq9g/AABfyc9Zxe1kE4k3Sf-xNJyDa?dl=0">multi-geo-utils</a> (<a href="https://www.dropbox.com/s/7vdyarczp97r60c/multi-geo-utils.zip?dl=0">zip</a>) that contains the files:
+The root directory must contain a folder named <a href="https://www.dropbox.com/sh/6v7fz50saldiq9g/AABfyc9Zxe1kE4k3Sf-xNJyDa?dl=0">multi-geo-utils</a> (<a href="https://www.dropbox.com/s/axe3vkj29p9z4o6/multi-geo-utils.zip?dl=0">zip</a>) that contains the files:
 * <a href="http://download.geonames.org/export/dump/countryInfo.txt">`countryInfo.txt`</a>
 * <a href="http://download.geonames.org/export/dump/cities1000.zip">`cities1000.txt`</a>
 * <a href="https://www.dropbox.com/s/cxfn1h5toxbljzv/term_cell_probs.txt?dl=0">`term_cell_probs.txt`</a>
