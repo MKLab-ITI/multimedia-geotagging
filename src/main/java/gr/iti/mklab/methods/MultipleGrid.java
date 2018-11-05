@@ -53,6 +53,7 @@ public class MultipleGrid {
 				writer.newLine();
 			} else{
 				writer.write(corseMLC.split("\t")[0] + "\tN/A");
+				writer.newLine();
 			}
 		}
 

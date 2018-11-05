@@ -32,7 +32,7 @@ import net.sf.geographiclib.Geodesic;
 public class Evaluation {
 
 	private static Logger logger = Logger.getLogger(
-			"gr.iti.mklab.eval.VisualSampling");
+			"gr.iti.mklab.main.Evaluation");
 
 	/**
 	 * Initialize the map of the results based on the given values.

@@ -1,5 +1,6 @@
 package gr.iti.mklab.methods;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import org.apache.log4j.Logger;
 import gr.iti.mklab.tools.CenterOfGravity;
 import gr.iti.mklab.util.EasyBufferedWriter;
 import gr.iti.mklab.util.Progress;
+import gr.iti.mklab.util.Utils;
 import gr.iti.mklab.util.EasyBufferedReader;
 
 /**
@@ -26,17 +28,23 @@ public class SimilaritySearch extends CenterOfGravity{
 
 	/**
 	 * Contractor of the class.
+	 * @param a : variable required for center-of-gravity calculation
+	 */
+	public SimilaritySearch(int a) {
+		super(a);
+	}
+	
+	/**
+	 * Search function
 	 * @param multipleGridFile : file that contains the results of the multiple grid technique
 	 * @param similarityFile : file that contains the similar images of every query images 
 	 * @param testFile : file that contains the test image's metadata
 	 * @param outputFile : name of the output file
 	 * @param k : number of similar images based on the center-of-gravity is calculated
-	 * @param a : variable required for center-of-gravity calculation
+	 * @throws IOException file not found
 	 */
-	public SimilaritySearch(String testFile,String multipleGridFile, 
-			String similarityFile, String outputFile, int k, int a) {
-		super(a);
-
+	public void search(String testFile,String multipleGridFile, 
+			String similarityFile, String outputFile, int k) throws IOException {
 		logger.info("Process: Location Estimation\t|\t"
 				+ "Status: INITIALIZE");
 		loadEstimatedCells(multipleGridFile);
@@ -71,21 +79,22 @@ public class SimilaritySearch extends CenterOfGravity{
 	 * @param similarityFile : file that contains the similar images of every query images 
 	 * @param cellFile : file that contains the results of the multiple grid technique
 	 * @param k : number of similar images based on the center-of-gravity is calculated
+	 * @throws IOException 
 	 */
-	private void estimateLocation(String similarityFile, int k) {
+	private void estimateLocation(String similarityFile, int k) throws IOException {
 
+		long count = 0, total = Utils.countLines(similarityFile);
 		EasyBufferedReader reader = new EasyBufferedReader(similarityFile);
-
-		Progress prog = new Progress(System.currentTimeMillis(), 1000000, 100, 1, "calculate", logger);
-		int count=0;
+		Progress prog = new Progress(System.currentTimeMillis(), total, 10, 1, "calculate", logger);
 		String line;
 
 		// Calculate the final results
 		while ((line = reader.readLine())!=null){
 			prog.showProgress(count, System.currentTimeMillis());
-			if(estimatedCellMap.containsKey(line.split("\t")[0])){
-				similarities.put(line.split("\t")[0], 
-						findSimilarImages(line, estimatedCellMap.get(line.split("\t")[0]), k));
+			String imageID = line.split("\t")[0];
+			if(estimatedCellMap.containsKey(imageID)){
+				similarities.put(imageID, 
+						findSimilarImages(line, estimatedCellMap.get(imageID), k));
 			}
 			count++;
 		}
@@ -113,14 +122,14 @@ public class SimilaritySearch extends CenterOfGravity{
 		// final estimation
 		for(String image:images){
 			if(similarity.size()<k){
-				if(!cells.split(">")[0].equals(cells.split(">")[1])){
-					if(deterimCell(image.split(">")[0],cells)){
-						similarity.put(image.split(">")[0], Double.parseDouble(image.split(">")[1]));
+				if(!cells.split(":")[0].equals(cells.split(":")[1])){
+					if(deterimCell(image.split(":")[0], cells.split(":")[0])){
+						similarity.put(image.split(":")[0], Double.parseDouble(image.split(":")[1]));
 					}else if(similarityCoarser.size()<k && similarity.isEmpty()){
-						similarityCoarser.put(image.split(">")[0], Double.parseDouble(image.split(">")[1]));
+						similarityCoarser.put(image.split(":")[0], Double.parseDouble(image.split(":")[1]));
 					}
 				}else {
-					similarity.put(image.split(">")[0], Double.parseDouble(image.split(">")[1]));
+					similarity.put(image.split(":")[0], Double.parseDouble(image.split(":")[1]));
 				}
 			}else{
 				flag = true;
@@ -136,12 +145,12 @@ public class SimilaritySearch extends CenterOfGravity{
 			flag = true;
 			result = computeCoordination(similarityCoarser);
 		}
-
+		
 		// final return
 		if(flag){
 			return result[1] + "\t" + result[0];
 		}else{
-			return cells.split(">")[0].replace("_", "\t");
+			return cells.split(":")[0].replace("_", "\t");
 		}
 	}
 
@@ -179,16 +188,15 @@ public class SimilaritySearch extends CenterOfGravity{
 		String line;
 		// for every query image
 		while ((line = reader.readLine())!=null){
-
-			writer.write(line.split("\t")[0]);
-
-			if(similarities.containsKey(line.split("\t")[0])){ // the location have been estimated
+			String imageID = line.split("\t")[1];
+			writer.write(imageID);
+			if(similarities.containsKey(imageID)){ // the location have been estimated
 				writer.write(line.split("\t")[1] + "\t" +
 						line.split("\t")[12] + "\t" + line.split("\t")[13] + "\t" +
-						similarities.get(line.split("\t")[0]));
+						similarities.get(imageID));
 				writer.newLine();
 			}else{ // no estimation
-				writer.write(line.split("\t")[1] + "\t" +
+				writer.write(imageID + "\t" +
 						line.split("\t")[12] + "\t" + line.split("\t")[13]
 						+ "\t-73.98282136256299\t40.75282028252674");
 				writer.newLine();

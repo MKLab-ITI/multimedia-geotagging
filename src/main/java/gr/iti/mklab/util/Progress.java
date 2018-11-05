@@ -4,13 +4,12 @@ import org.apache.log4j.Logger;
 
 public class Progress {
 
-	private long gStartTime, lastTime;
-	private int div, scaleTime;
+	private long gStartTime, lastTime, div;
+	private int scaleTime, sec;
 	private String mesPerCent, mesTime, messege;
-	private int sec;
 	private Logger logger;
 
-	public Progress(long gStartTime, int limitCountLines, int scalePerCent, int scaleTime, String messege, Logger logger){
+	public Progress(long gStartTime, long limitCountLines, int scalePerCent, int scaleTime, String messege, Logger logger){
 		this.gStartTime = gStartTime;
 
 		this.mesPerCent = "%";
@@ -46,7 +45,7 @@ public class Progress {
 		}
 	}
 	
-	public void showProgress(int count, long stopTime){
+	public void showProgress(long count, long stopTime){
 		if(count%div==0){
 			logger.info(messege+" > "+count/div+ mesPerCent + " > " + (stopTime-gStartTime)/(scaleTime*1000) + mesTime);
 		}

@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
  * @author gkordo
  *
  */
+@Deprecated
 public class Entropy {
 
 	static Logger logger = Logger.getLogger("gr.iti.mklab.method.Entropy");
@@ -34,7 +35,7 @@ public class Entropy {
 		logger.info("Process: Spatial Entropy weights calculation\t|\t"
 				+ "Status: INITIALIZE");
 
-		new File(dir + "Weights").mkdir();
+		new File(dir + "weights").mkdir();
 
 		// Term Spatial Entropy calculation
 		EasyBufferedReader reader = new EasyBufferedReader(dir + fileTermCell);
@@ -60,7 +61,7 @@ public class Entropy {
 		
 		// store weights
 		EasyBufferedWriter writer = new EasyBufferedWriter(
-				dir + "Weights/spatial_entropy_weights");
+				dir + "weights/spatial_entropy_weights");
 		for(Entry<String, Double> term:weights.entrySet()){
 			writer.write(term.getKey() + "\t" + term.getValue());
 			writer.newLine();

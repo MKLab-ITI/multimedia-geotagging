@@ -25,8 +25,8 @@ import org.apache.log4j.Logger;
  */
 public class SimilarityCalculator{
 
-	private static Set<String> testIDs;
-	private static Set<String>users;
+	private static Set<String> testIDs = new HashSet<String>();
+	private static Set<String> users = new HashSet<String>();
 	private static Logger logger = Logger.getLogger("gr.iti.mklab.methods.SimilaritySearch");
 	static java.util.Map<String, List<ImageMetadata>> predictedCellsOfTestImages = new HashMap<String,  List<ImageMetadata>>();
 
@@ -91,7 +91,7 @@ public class SimilarityCalculator{
 								+ trainImageTerms.size() - common.size());
 						if(sjacc>0.05){
 							output.collect(new Text(entry.getId()), new Text(String.valueOf(sjacc) +
-									">" + metadata[12] + "_"+metadata[13]));
+									":" + metadata[12] + "_"+metadata[13]));
 						}
 					}
 				}
@@ -120,7 +120,7 @@ public class SimilarityCalculator{
 			// load values in a topic similarity map
 			while (values.hasNext()) {
 				String entry = values.next().toString();
-				simImages.put(entry.split(">")[1],Double.parseDouble(entry.split(">")[0]));
+				simImages.put(entry.split(":")[1],Double.parseDouble(entry.split(":")[0]));
 			}
 
 			// sort similarity map
@@ -139,7 +139,7 @@ public class SimilarityCalculator{
 			String out = "";
 
 			for(Entry<String,Double> entry : simImages.entrySet()){
-				out += entry.getKey() + ">" + entry.getValue() + " ";
+				out += entry.getKey() + ":" + entry.getValue() + " ";
 			}
 
 			return out.trim();
@@ -208,8 +208,8 @@ public class SimilarityCalculator{
 			if(!lineR.split("\t")[1].equals("N/A")){
 				// create an object based on test image metadata
 				Set<String> terms = new HashSet<String>();
-				TextUtil.parse(lineR.split("\t")[10], terms);
-				TextUtil.parse(lineR.split("\t")[8], terms);
+				TextUtil.parse(lineT.split("\t")[10], terms);
+				TextUtil.parse(lineT.split("\t")[8], terms);
 				ImageMetadata image = new ImageMetadata(lineT.split("\t")[1], lineT.split("\t")[3], terms);
 
 				// update respective sets
