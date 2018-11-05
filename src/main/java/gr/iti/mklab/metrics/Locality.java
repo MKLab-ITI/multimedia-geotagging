@@ -201,7 +201,7 @@ public class Locality {
 		JobClient.runJob(conf);
 
 		sortAndStore(dir + "temp/locality/part-00000",
-				dir + "Weights/locality_weights");
+				dir + "weights/locality_weights");
 
 		logger.info("Process: Locality weight calculation\t|\t"
 				+ "Status: COMPLETED\t|\tTotal time: " + 

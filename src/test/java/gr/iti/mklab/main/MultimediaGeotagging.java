@@ -2,14 +2,21 @@ package gr.iti.mklab.main;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.HashSet;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.apache.log4j.Logger;
 
 import gr.iti.mklab.methods.MultipleGrid;
+import gr.iti.mklab.data.Estimation;
 import gr.iti.mklab.data.GeoCell;
 import gr.iti.mklab.methods.LanguageModel;
 import gr.iti.mklab.methods.SimilaritySearch;
@@ -21,7 +28,7 @@ import gr.iti.mklab.tools.SimilarityCalculator;
 import gr.iti.mklab.util.EasyBufferedReader;
 import gr.iti.mklab.util.EasyBufferedWriter;
 import gr.iti.mklab.util.Progress;
-import gr.iti.mklab.util.TextUtil;
+import gr.iti.mklab.util.Utils;
 
 /**
  * The main class that combines all the other class in order to implement the method.
@@ -35,6 +42,7 @@ public class MultimediaGeotagging {
 
 	static Logger logger = Logger.getLogger("gr.iti.mklab.MainPlacingTask");
 
+	@SuppressWarnings("deprecation")
 	public static void main(String[] args) throws Exception{
 
 		Properties properties = new Properties();
@@ -71,10 +79,12 @@ public class MultimediaGeotagging {
 		}
 
 		// Feature Selection and Feature Weighting (Locality and Spatial Entropy Calculation)
-		if(process.contains("FS") || process.equals("all")){
+		if(process.contains("FS")){
+			logger.warn("Depricated Feature Selection and Feature Weighting functions.");
+			logger.warn("We advise you to use the provided weights instead.");
 			Entropy.calculateEntropyWeights(dir, "Term-Cell Probs/scale_" + coarserScale
 					+ "/term_cell_probs");
-			
+
 			Locality loc = new Locality(dir + testFile, coarserScale);
 			loc.calculateLocality(dir, trainFolder);
 		}
@@ -83,29 +93,29 @@ public class MultimediaGeotagging {
 		if(process.contains("LM") || process.equals("all")){
 			MultimediaGeotagging.computeMLCs(dir, testFile, "resultLM_scale" + coarserScale, 
 					"Term-Cell Probs/scale_" + coarserScale + "/term_cell_probs", 
-					"Weights", true);
+					"weights", true);
 
 			MultimediaGeotagging.computeMLCs(dir, testFile, "resultLM_scale" + finerScale, 
 					"Term-Cell Probs/scale_" + finerScale + "/term_cell_probs", 
-					"Weights", false);
+					"weights", false);
 		}
 
 		// Multiple Grid Technique
 		if(process.contains("MG") || process.equals("all")){
-			MultipleGrid.determinCellIDsForSS(dir + "resultLM/", 
+			MultipleGrid.determinCellIDsForSS(dir + "results/", 
 					"resultLM_mg" + coarserScale + "-" + finerScale,
 					"resultLM_scale"+coarserScale, "resultLM_scale"+finerScale);
 		}
 
 		//Similarity Search
 		if(process.contains("SS") || process.equals("all")){
-			new SimilarityCalculator(dir + testFile, dir + 
-					"resultLM/resultLM_mg" + coarserScale + "-" + finerScale)
-			.performSimilarityCalculation(dir, trainFolder, "resultSS");
+			SimilarityCalculator calculator = new SimilarityCalculator(dir + testFile, dir + 
+					"results/resultLM_mg" + coarserScale + "-" + finerScale);
+			calculator.performSimilarityCalculation(dir, trainFolder, "temp/similar_images");
 
-			new SimilaritySearch(dir + testFile, dir + 
-					"resultLM/resultLM_mg" + coarserScale + "-" + finerScale, 
-					dir + "resultSS/image_similarities", dir + resultFile, k, 1);
+			SimilaritySearch searcher = new SimilaritySearch(1);
+			searcher.search(dir + testFile, dir + "results/resultLM_mg" + coarserScale + "-" + finerScale, 
+					dir + "temp/similar_images/image_similarities", dir + "results/" + resultFile, k);
 		}
 
 		logger.info("Program Finished");
@@ -120,19 +130,19 @@ public class MultimediaGeotagging {
 	 * @param weightFolder : the folder that contains the files of term weights
 	 * @param thetaG : feature selection accuracy threshold
 	 * @param thetaT : feature selection frequency threshold
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
+	 * @throws IOException 
 	 */
 	public static void computeMLCs(String dir, 
 			String testFile, String resultFile, String termCellProbsFile, 
-			String weightFolder, boolean confidenceFlag){
+			String weightFolder, boolean confidenceFlag) throws InterruptedException, ExecutionException, IOException{
 
 		logger.info("Process: Language Model MLC\t|\t"
 				+ "Status: INITIALIZE\t|\tFile: " + testFile);
-		
-		new File(dir + "resultsLM").mkdir();
+
+		new File(dir + "results").mkdir();
 		EasyBufferedReader reader = new EasyBufferedReader(dir + testFile);
-		EasyBufferedWriter writer = new EasyBufferedWriter(dir + "resultsLM/" + resultFile);
-		EasyBufferedWriter writerCE = new EasyBufferedWriter(dir + "resultsLM/" +
-				resultFile + "_conf_evid");
 
 		// initialization of the Language Model
 		LanguageModel lmItem = new LanguageModel();
@@ -141,43 +151,40 @@ public class MultimediaGeotagging {
 
 		logger.info("Process: Language Model MLC\t|\t"
 				+ "Status: STARTED");
-		
-		
-		int count = 0, total = 1000000;
+
+
+		long count = 0, total = Utils.countLines(dir + testFile);
 		long startTime = System.currentTimeMillis();
 		Progress prog = new Progress(startTime,total,10,60, "calculate",logger);
+		ExecutorService pool = Executors.newCachedThreadPool();
+		List<Future<GeoCell>> future = new ArrayList<Future<GeoCell>>();
+		List<String> ids = new ArrayList<String>();
+
 		String line;
 		while ((line = reader.readLine())!=null && count<=total){
-
-			prog.showProgress(count, System.currentTimeMillis());
-			count++;
-			
 			String[] metadata = line.split("\t");
-			
-			// Pre-procession of the tags and title
-			Set<String> terms = new HashSet<String>();
-			TextUtil.parse(metadata[10], terms);
-			TextUtil.parse(metadata[8], terms);
-
-			GeoCell result = lmItem.calculateLanguageModel(terms,
-					termCellProbsMap, confidenceFlag);
-
-			if(result == null){ // no result from tags and title procession
-				// give image's description in the language model (if provided)
-				result = lmItem.calculateLanguageModel(TextUtil.parse(metadata[9], terms),
-						termCellProbsMap, confidenceFlag);
-			}
+			future.add(pool.submit(new Estimation(metadata, lmItem, termCellProbsMap, confidenceFlag)));
+			ids.add(metadata[1]);
+			prog.showProgress(count, System.currentTimeMillis());
+			count++;	
+		}
+		
+		EasyBufferedWriter writer = new EasyBufferedWriter(dir + "results/" + resultFile);
+		EasyBufferedWriter writerCE = new EasyBufferedWriter(dir + "results/" +
+				resultFile + "_conf_evid");
+		for (int i=0; i<ids.size(); i++) {
+			String id = ids.get(i);
+			GeoCell result = future.get(i).get();
 
 			// write the results
 			if(result != null && !result.equals("null")){
-				writer.write(line.split("\t")[0] + "\t" + result.getID());
+				writer.write(id + "\t" + result.getID());
 				if(confidenceFlag)
-					writerCE.write(line.split("\t")[0] + "\t" + result.getConfidence() +
-							"\t" + result.getConfidence().toString());
+					writerCE.write(id + "\t" + result.getConfidence());
 			}else{
-				writer.write(line.split("\t")[0] + "\tN/A");
+				writer.write(id + "\tN/A");
 				if(confidenceFlag)
-					writerCE.write(line.split("\t")[0] + "\tN/A");
+					writerCE.write(id + "\tN/A");
 			}
 			writer.newLine();
 			if(confidenceFlag)

@@ -1,9 +1,14 @@
 package gr.iti.mklab.util;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
 
 import gr.iti.mklab.data.GeoCell;
 
@@ -18,13 +23,13 @@ import java.util.LinkedList;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class Utils {
 
-	
+
 	public static <K extends Comparable,V extends Comparable> Map<K,V> sortByValues(Map<K,V> map){
 		List<Map.Entry<K,V>> entries = new LinkedList<Map.Entry<K,V>>(map.entrySet());
 
 		Collections.sort(entries, Collections.reverseOrder(new Comparator<Map.Entry<K,V>>() {
 
-			
+
 			public int compare(Entry<K, V> o1, Entry<K, V> o2) {
 				return o1.getValue().compareTo(o2.getValue());
 			}
@@ -166,7 +171,7 @@ public class Utils {
 			return b[b.length / 2];
 		}
 	}
-	
+
 	public static <K extends Comparable,V extends Comparable>
 	double medianItemDouble(Map<K, V> map) 
 	{
@@ -187,5 +192,10 @@ public class Utils {
 		{
 			return b[b.length / 2];
 		}
+	}
+
+	public static long countLines(String file) throws IOException {
+		Path path = Paths.get(file);
+		return Files.lines(path).count();
 	}
 }

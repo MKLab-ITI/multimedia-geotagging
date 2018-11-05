@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
  */
 public class LanguageModel {
 
-	protected Map<String, Double[]> selectedTermWeights;
+	protected Map<String, Double[]> selectedTermWeights = new HashMap<String, Double[]>();
 
 	private static Logger logger = Logger.getLogger("gr.iti.mklab.methods.LanguageModel");
 
@@ -50,9 +50,9 @@ public class LanguageModel {
 			String mlcId = cellMap.keySet().toArray()[0].toString();
 
 			mlc = cellMap.get(mlcId);
-			
+
 			if(confidenceFlag)
-			mlc.setConfidence((float) calculateConfidence(cellMap, mlcId, 0.3));
+				mlc.setConfidence((float) calculateConfidence(cellMap, mlcId, 0.3));
 		}
 
 		return mlc;
@@ -62,7 +62,7 @@ public class LanguageModel {
 	private static double calculateConfidence(Map<String, GeoCell> cellMap, 
 			String mlc, double l) {
 
-		Double sum = 0.0, total = 0.0;
+		Double sum = 0.0, total = 0.0, i = 0.0;
 
 		for(Entry<String, GeoCell> entry:cellMap.entrySet()){
 			double[] mCell = {Double.parseDouble(mlc.split("_")[0]),
@@ -74,6 +74,9 @@ public class LanguageModel {
 				sum += entry.getValue().getTotalProb();
 			}
 			total += entry.getValue().getTotalProb();
+			if(i > 100)
+				break;
+			i++;
 		}
 		return sum/total;
 	}
@@ -90,18 +93,18 @@ public class LanguageModel {
 
 		for(String term:terms){
 			if(termCellProbsMap.containsKey(term)){
-				double locality= selectedTermWeights.get(term)[1];
 				double entropy= selectedTermWeights.get(term)[0];
+				double locality= selectedTermWeights.get(term)[1];
 
 				for(Entry<String, Double> entry: termCellProbsMap.get(term).entrySet()){
 					String cell = entry.getKey();
 					if(cellMap.containsKey(cell)){
 						cellMap.get(cell).addProb(entry.getValue()
-								*(0.8*locality+0.2*entropy), term);
+								*(0.35*locality+0.65*entropy), term);
 					}else{
 						GeoCell tmp = new GeoCell(cell);
 						tmp.addProb(entry.getValue()
-								*(0.8*locality+0.2*entropy), term);
+								*(0.35*locality+0.65*entropy), term);
 						cellMap.put(cell,tmp);
 					}
 				}
@@ -127,11 +130,11 @@ public class LanguageModel {
 
 		long startTime = System.currentTimeMillis();
 		Progress prog = new Progress(startTime,10,1,"loading",logger);
-		
+
 		Map<String,Map<String,Double>> tagCellProbsMap = 
 				new HashMap<String,Map<String,Double>>();
 		Set<String> termsInTestSet = DataManager.getSetOfTerms(testFile);
-		
+
 		EasyBufferedReader reader = new EasyBufferedReader(probFile);
 		String line;
 		// load tag-cell probabilities from the given file
@@ -139,10 +142,12 @@ public class LanguageModel {
 			prog.showMessege(System.currentTimeMillis());
 			String term = line.split("\t")[0];
 
-			if(line.split("\t").length>1 && termsInTestSet.contains(term) 
+			if(line.split("\t").length>1 
+					&& line.split("\t")[1].contains(" ")
+					&& termsInTestSet.contains(term) 
 					&& selectedTermWeights.containsKey(term)){				
 				Map<String, Double> tmpCellMap = new HashMap<String,Double>();
-				for(String cell:line.split("\t")[2].split(" ")){
+				for(String cell:line.split("\t")[1].split(" ")){
 					tmpCellMap.put(cell.split(">")[0], 
 							Double.parseDouble(cell.split(">")[1]));
 				}
@@ -155,26 +160,27 @@ public class LanguageModel {
 
 		return tagCellProbsMap;
 	}
-	
+
 	private void loadTermWeights(String folder){
-		
+
 		// load locality weight of the terms
 		EasyBufferedReader reader = new 
 				EasyBufferedReader(folder + "/locality_weights");
 		String line;
+		Map<String, Double> locality = new HashMap<String, Double>();
 		while ((line = reader.readLine())!=null){
-			Double[] temp = {0.0, Double.parseDouble(line.split("\t")[1])};
-			selectedTermWeights.put(line.split("\t")[0], temp);
+			locality.put(line.split("\t")[0], Double.parseDouble(line.split("\t")[1]));
 		}
 		reader.close();
-		
+
 		// load spatial entropy weight of the terms
 		reader = new EasyBufferedReader(
 				folder + "/spatial_entropy_weights");
 		while ((line = reader.readLine())!=null){
-			if(selectedTermWeights.containsKey(line.split("\t")[0]))
-				selectedTermWeights.get(line.split("\t")[0])[0] = 
-				Double.parseDouble(line.split("\t")[1]);
+			if(locality.containsKey(line.split("\t")[0])) {
+				selectedTermWeights.put(line.split("\t")[0], 
+						new Double[]{Double.parseDouble(line.split("\t")[1]), locality.get(line.split("\t")[0])});
+			}
 		}
 		reader.close();
 	}
