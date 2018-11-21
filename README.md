@@ -86,6 +86,32 @@ Additionally, in this <a href="https://github.com/MKLab-ITI/multimedia-geotaggin
 
 There have been developed a <a href="https://github.com/socialsensor/multimedia-geotagging/tree/demo">demo version</a> and a <a href="https://github.com/socialsensor/multimedia-geotagging/tree/storm">storm module</a> of the approach.
 
+<h3>Citations</h3>
+
+If you use this code for your research, please cite our paper.
+```
+@article{kordopatis2017geotagging,
+  title={Geotagging Text Content With Language Models and Feature Mining},
+  author={Kordopatis-Zilos, Giorgos and Papadopoulos, Symeon and Kompatsiaris, Ioannis},
+  journal={Proceedings of the IEEE},
+  year={2017}
+}
+```
+If you use the evaluation framework, please cite our paper.
+```
+@inproceedings{kordopatis2016depth,
+  title={In-depth exploration of geotagging performance using sampling strategies on YFCC100M},
+  author={Kordopatis-Zilos, Giorgos and Papadopoulos, Symeon and Kompatsiaris, Yiannis},
+  booktitle={Proceedings of the 2016 ACM Workshop on Multimedia COMMONS},
+  year={2016},
+}
+```
+
+<h3>License</h3>
+
+This project is licensed under the Apache License 2.0 - see the <a href="https://github.com/MKLab-ITI/multimedia-geotagging/blob/master/LICENSE">LICENSE</a> file for details
+
+
 <h3>Contact for further details about the project</h3>
 
 Giorgos Kordopatis-Zilos (georgekordopatis@iti.gr)<br>
